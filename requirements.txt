@@ -9,3 +9,4 @@ wget
 subprocess
 awscli
 urllib
+vcf
