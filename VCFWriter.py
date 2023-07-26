@@ -1,4 +1,3 @@
-from VCFSampleProcessor import VCF_sample_processor
 class VCF_writer:
 
     def __init__(self,vcf_to_read,processor):
@@ -7,6 +6,9 @@ class VCF_writer:
         self.processor=processor
 
     def main_writer(self):
+        """
+        this method read the vcf and write the filtered one
+        """
         filtered= open(self.filterd_file,"w")
         with open(self.origin_vcf,"r") as origin:
             lines= origin.readlines()
@@ -22,6 +24,12 @@ class VCF_writer:
                         filtered.write(new_line)
 
     def process_line(self,line,header_col):
+        """
+        this method get a line and process it to the filtered vcf
+        :param line:
+        :param header_col:
+        :return: new line or None
+        """
         final_dict={}
         splited_line=line.split("\t")
         splited_header=header_col.split("\t")
@@ -48,6 +56,12 @@ class VCF_writer:
 
 
     def build_new_line(self,gene,final_dict):
+        """
+        this method get the gene and the other values and build a new line for the filtered vcf
+        :param gene:
+        :param final_dict:
+        :return: new line (str)
+        """
         final_dict.pop("DP")
         print(final_dict)
         final_dict["INFO"]=final_dict["INFO"]+f";GENE={gene}"
@@ -55,6 +69,6 @@ class VCF_writer:
         return new_line
 
 
-proc=VCF_sample_processor(60000,70000,10)
-vw= VCF_writer("downloads/vcf_file.vcf",proc)
-vw.main_writer()
+# proc=VCF_sample_processor(60000,70000,10)
+# vw= VCF_writer("downloads/vcf_file.vcf",proc)
+# vw.main_writer()

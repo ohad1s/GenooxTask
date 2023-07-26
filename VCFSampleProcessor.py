@@ -9,6 +9,11 @@ class VCF_sample_processor:
         self.API_fetcher=API_fetcher()
 
     def filter(self,sample):
+        """
+        this method get a sample from the vcf and return true if its match the filter values
+        :param sample:
+        :return: boolean value if filtered or not
+        """
         pos= sample["POS"]
         if self.start<=pos<=self.end:
             dp=sample["DP"]
@@ -18,6 +23,11 @@ class VCF_sample_processor:
         return False
 
     def get_GENE(self,sample):
+        """
+        this method get a sample from the vcf and return its variant_gene
+        :param sample:
+        :return: variant_gene
+        """
         chrom=sample["CHROM"]
         pos=sample["POS"]
         alt=sample["ALT"]

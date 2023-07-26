@@ -6,6 +6,16 @@ class API_fetcher:
         self.api_url="https://test.genoox.com/api/fetch_variant_details"
 
     def fetch_variant_gene(self, chrom, pos, ref, alt, reference_version):
+        """
+
+        :param chrom:
+        :param pos:
+        :param ref:
+        :param alt:
+        :param reference_version:
+        this method send all the params to an API and get back variant_gene
+        :return: variant_gene
+        """
 
         payload = {
             "chr": chrom,
@@ -22,7 +32,6 @@ class API_fetcher:
             if response.status_code == 200:
                 data = response.json()
                 return data
-                # print(data)
 
             else:
                 print(f"Error: {response.status_code} - {response.text}")

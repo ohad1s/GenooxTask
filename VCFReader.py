@@ -1,10 +1,6 @@
-import os
-import boto3
 import gzip
-from botocore.exceptions import NoCredentialsError
 import requests
-import subprocess
-import urllib.request
+
 
 class VCF_reader:
 
@@ -49,4 +45,3 @@ class VCF_reader:
         self.download()
         self.extract()
 
-# vr= VCF_reader("s3://resources.genoox.com/homeAssingment/demo_vcf_multisample.vcf.gz")
