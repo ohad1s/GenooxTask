@@ -1,0 +1,11 @@
+unittest
+os
+shutil
+gzip
+boto3
+botocore
+requests
+wget
+subprocess
+awscli
+urllib
