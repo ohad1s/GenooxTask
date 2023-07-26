@@ -33,10 +33,13 @@ class VCF_writer:
                 for val in info:
                     if val.startswith("DP"):
                         dp= val.split("=")
-                        final_dict["DP"]=dp[1]
-                        final_dict["INFO"]=line
+                        final_dict["DP"]=float(dp[1])
+                        final_dict["INFO"]=col_val
             else:
-                final_dict[col_name]=col_val
+                try:
+                    final_dict[col_name]=float(col_val)
+                except Exception:
+                    final_dict[col_name] = col_val
         gene= self.processor.filter_and_get_gene(final_dict)
         if  gene != None:
             return self.build_new_line(gene,final_dict)
@@ -46,8 +49,9 @@ class VCF_writer:
 
     def build_new_line(self,gene,final_dict):
         final_dict.pop("DP")
+        print(final_dict)
         final_dict["INFO"]=final_dict["INFO"]+f";GENE={gene}"
-        new_line="\t".join(final_dict.values())
+        new_line="\t".join(str(x) for x in final_dict.values())
         return new_line
 
 
