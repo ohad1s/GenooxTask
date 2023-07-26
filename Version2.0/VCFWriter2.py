@@ -52,7 +52,7 @@ class VCF_writer:
                 try:
                     final_dict[col_name]=float(col_val)
                 except Exception:
-                    final_dict[col_name] = col_val
+                    final_dict[col_name.strip("\n")] = col_val.strip("\n")
         gene= self.processor.filter_and_get_gene(final_dict)
         if  gene != None:
             return self.build_new_line(gene,final_dict)

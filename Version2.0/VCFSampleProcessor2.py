@@ -2,11 +2,12 @@ from APIFetcher2 import API_fetcher
 
 class VCF_sample_processor:
 
-    def __init__(self,start,end,minDP):
+    def __init__(self,start,end,minDP,deNovo):
         self.start=start
         self.end=end
         self.minDP=minDP
         self.API_fetcher=API_fetcher()
+        self.deNovo=deNovo
 
     def filter(self,sample):
         """
@@ -37,7 +38,22 @@ class VCF_sample_processor:
         gene= data["gene"]
         return gene
 
+
+    def deNovo_filter(self,sample):
+        father=sample["father"].split(":")[0]
+        mother=sample["mother"].split(":")[0]
+        proband=sample["proband"].split(":")[0]
+
+        if self.deNovo:
+            if proband not in ["0/0", "./."] and mother == "./." and father == "./.":
+                return True
+            return False
+        else:
+            if proband not in ["0/0", "./."] and (mother != "./." or father != "./."):
+                return True
+            return False
+
     def filter_and_get_gene(self,sample):
-        if self.filter(sample):
+        if self.filter(sample) and self.deNovo_filter(sample):
             return self.get_GENE(sample)
         return None
