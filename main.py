@@ -19,7 +19,7 @@ if __name__ == '__main__':
         main_process(limit)
 
     elif  not (2<=len(sys.argv)<=5):
-        print("Usage: python3 main.py <start> <end> <minDP> <limit>")
+        print("Usage: python3 main2.py <limit> <start> <end> <minDP>")
 
     else:
         limit = int(sys.argv[1])
