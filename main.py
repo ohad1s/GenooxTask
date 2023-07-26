@@ -1,17 +1,38 @@
-# This is a sample Python script.
+from VCFSampleProcessor import VCF_sample_processor
+from VCFWriter import VCF_writer
+import sys
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+def main_process(limit,start=0,end=1000000,minDP=0):
+    if limit>=10:
+        raise ValueError("limit must be an int < 10")
+    if type(limit)!=int:
+        raise TypeError("limit must be an int < 10")
+    proc=VCF_sample_processor(start,end,minDP)
+    vw= VCF_writer("downloads/vcf_file.vcf",proc,limit)
+    vw.main_writer()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # print_hi('PyCharm')
-    splited= "s3://resources.genoox.com/homeAssingment/demo_vcf_multisample.vcf.gz".split("/")
-    print(splited)
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    if len(sys.argv)==2:
+        limit = int(sys.argv[1])
+        main_process(limit)
+
+    elif  not (2<=len(sys.argv)<=5):
+        print("Usage: python3 main.py <start> <end> <minDP> <limit>")
+
+    else:
+        limit = int(sys.argv[1])
+
+        if len(sys.argv)==3:
+            start = float(sys.argv[2])
+            main_process(limit,start)
+        elif len(sys.argv)==4:
+            start = float(sys.argv[2])
+            end = float(sys.argv[3])
+            main_process(limit, start, end)
+        else:
+            start = float(sys.argv[2])
+            end = float(sys.argv[3])
+            minDP = float(sys.argv[4])
+            main_process(limit,start, end, minDP)

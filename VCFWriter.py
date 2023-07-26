@@ -1,9 +1,11 @@
 class VCF_writer:
 
-    def __init__(self,vcf_to_read,processor):
+    def __init__(self,vcf_to_read,processor,limit):
         self.origin_vcf=vcf_to_read
         self.filterd_file=f"{self.origin_vcf[:-4]}_filtered.vcf"
         self.processor=processor
+        self.counter=0
+        self.limit=limit
 
     def main_writer(self):
         """
@@ -22,6 +24,10 @@ class VCF_writer:
                     new_line= self.process_line(line,header_col)
                     if new_line!=None:
                         filtered.write(new_line)
+                        self.counter+=1
+                    if self.counter==self.limit:
+                        break
+        filtered.close()
 
     def process_line(self,line,header_col):
         """
@@ -68,7 +74,3 @@ class VCF_writer:
         new_line="\t".join(str(x) for x in final_dict.values())
         return new_line
 
-
-# proc=VCF_sample_processor(60000,70000,10)
-# vw= VCF_writer("downloads/vcf_file.vcf",proc)
-# vw.main_writer()
