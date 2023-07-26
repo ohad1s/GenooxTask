@@ -41,7 +41,3 @@ class VCF_reader:
             print(f"Error processing VCF content: {e}")
 
 
-if __name__ == '__main__':
-    url = "s3://resources.genoox.com/homeAssingment/demo_vcf_multisample.vcf.gz"
-    vcf_reader = VCF_reader(url)
-    vcf_reader.download_and_process()

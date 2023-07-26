@@ -1,3 +1,6 @@
+import threading
+
+
 class VCF_writer:
 
     def __init__(self,vcf_data,processor,limit):
@@ -6,27 +9,46 @@ class VCF_writer:
         self.processor=processor
         self.counter=0
         self.limit=limit
+        self.counter_lock = threading.Lock()
 
     def main_writer(self):
         """
         this method read the vcf and write the filtered one
         """
         filtered= open(self.filterd_file,"w")
-        header_col=[]
-        for line in self.origin_data:
-            if line.startswith("##"):
-                filtered.write(line)
-            elif line.startswith("#"):
-                filtered.write(line)
-                header_col=line.strip("#")
-            else:
-                new_line= self.process_line(line,header_col)
-                if new_line!=None:
-                    filtered.write(new_line)
-                    self.counter+=1
-                if self.counter==self.limit:
-                    break
+        index_line=0
+        while self.origin_data[index_line].startswith("#"):
+            filtered.write(self.origin_data[index_line])
+            index_line+=1
+        else:
+            filtered.close()
+            header_col = self.origin_data[index_line - 1].strip("#")
+            chunks=self.split_list_into_chunks(self.origin_data[index_line:],4)
+            threads=[]
+            for chunk in chunks:
+                thread = threading.Thread(target=self.chunk_method, args=(chunk,header_col))
+                thread.start()
+                threads.append(thread)
+            for thread in threads:
+                thread.join()
+
         filtered.close()
+
+    def split_list_into_chunks(self,lst, num_chunks):
+        chunk_size = len(lst) // num_chunks
+        chunks = [lst[i:i + chunk_size] for i in range(0, len(lst), chunk_size)]
+        return chunks
+
+    def chunk_method(self,chunk,header_col):
+        filtered = open(self.filterd_file, "a")
+        for line in chunk:
+            new_line = self.process_line(line, header_col)
+            if new_line != None:
+                with self.counter_lock:
+                    if self.counter == self.limit:
+                        break
+                    self.counter += 1
+                    filtered.write(new_line)
 
     def process_line(self,line,header_col):
         """
